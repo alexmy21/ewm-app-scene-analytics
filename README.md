@@ -11,12 +11,12 @@ analyzed with lattice-native methods that only HLLSets make possible.
                                 │
             ┌───────────────────┴───────────────────┐
             ▼                                       ▼
-   ┌────────────────────┐                  ┌────────────────────┐
-   │ vLLM line          │                  │ HLLSet lattice line │
-   │ DeepSeek-OCR       │                  │ (gen2 foundation)   │
-   │ CLIP-L vision tower│                  │ patch → tid tokens  │
+   ┌────────────────────┐                  ┌──────────────────────┐
+   │ vLLM line          │                  │ HLLSet lattice line  │
+   │ DeepSeek-OCR       │                  │ (gen2 foundation)    │
+   │ CLIP-L vision tower│                  │ patch → tid tokens   │
    │ 256 patches x 1024 │                  │ → HLLSet::from_tokens│
-   └─────────┬──────────┘                  └─────────┬──────────┘
+   └─────────┬──────────┘                  └─────────┬────────────┘
              │                                       │
              ▼                                       ▼
    centered cosine similarity              BSSτ = |A∩B| / |B|
