@@ -32,6 +32,12 @@ computed with n-gram unions of HLLSets instead of floating-point averages:
 the fast 1-gram line crosses below the slow 5-gram HLLSet moving average at
 every scene cut.
 
+It also runs the **Noether steering decomposition** `H(t) = (S(t), H(t-1),
+D, R, N)` over each frame transition — D dropped, R retained, N new — as
+**three experts** (`|D|/|R∪N|`, `1 − BSS(R_t,R_{t-1})`, `|N|/|R∪D|`), ranked
+by separation accuracy and weighted into one decision line that detects all
+nine cuts.
+
 ## Layout
 
 ```text
