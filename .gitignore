@@ -1,0 +1,7 @@
+# Notebook checkpoints and local artifacts
+.ipynb_checkpoints/
+__pycache__/
+*.pyc
+
+# Local demo working directory (frames, clips, diagrams) — never committed
+/tmp/ewm_scene_demo/
