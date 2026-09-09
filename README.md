@@ -1,7 +1,8 @@
 # ewm-app-scene-analytics
 
 An application-level demo project of the **ewm-app** line: scene-change
-detection in a short video clip, computed in two spaces and compared.
+detection in a short video clip, computed in two spaces and compared, then
+analyzed with lattice-native methods that only HLLSets make possible.
 
 ```text
                  ┌──────────────────────────────┐
@@ -27,23 +28,36 @@ detection in a short video clip, computed in two spaces and compared.
             lowest points  ⇒  scene changes
 ```
 
-The demo then adds the **moving-average model** — the stock-trading trick,
-computed with n-gram unions of HLLSets instead of floating-point averages:
-the fast 1-gram line crosses below the slow 5-gram HLLSet moving average at
-every scene cut.
+## What the notebook does
 
-It also runs the **Noether steering decomposition** `H(t) = (S(t), H(t-1),
-D, R, N)` over each frame transition — D dropped, R retained, N new — as
-**three experts** (`|D|/|R∪N|`, `1 − BSS(R_t,R_{t-1})`, `|N|/|R∪D|`), ranked
-by separation accuracy and weighted into one decision line that detects all
-nine cuts.
+`notebooks/01_vllm_scene_change_hllset.ipynb` (executed, figures embedded)
+runs five layers over a 10-scene, 100-frame clip:
+
+1. **vLLM line** — raw encodings from the DeepSeek-OCR CLIP-L vision tower
+   (256 patches × 1024-dim per frame), centered cosine similarity mapped to
+   `[0,1]`. Pearson 0.94 with the lattice line; detects the strongest cuts.
+2. **HLLSet lattice line** — the same patches quantized to `tid{n}` tokens
+   and inscribed as one HLLSet per frame through the gen2 `hllset` CLI;
+   consecutive frames compared with BSSτ. Detects **9/9** cuts.
+3. **Moving-average model** — the stock-trading trick in HLLSet space:
+   n-gram trailing unions of HLLSets as moving averages. The fast 1-gram line
+   crosses below the slow 5-gram MA at every scene cut. Detects **9/9** cuts
+   with zero false positives.
+4. **Noether D/R/N multi-expert model** — `H(t) = (S(t), H(t-1), D, R, N)`
+   per frame transition (D dropped, R retained, N new, all HLLSet set
+   algebra). Three experts — `|D|/|R∪N|`, `1 − BSS(R_t,R_{t-1})`,
+   `|N|/|R∪D|` — are ranked by separation accuracy and weighted into one
+   decision line (z-scores). Detects **9/9** cuts.
+5. **Real-footage run** — the same pipeline on a continuous-motion cat clip,
+   as a sanity check outside the synthetic ground truth.
 
 ## Layout
 
 ```text
 ewm-app-scene-analytics/
+├── README.md
 └── notebooks/
-    └── 01_vllm_scene_change_hllset.ipynb   # the application (executed, figures embedded)
+    └── 01_vllm_scene_change_hllset.ipynb   # the application
 ```
 
 ## How to run
@@ -74,6 +88,26 @@ modifies them.
 
 ## Status
 
-Executed green 2026-09-09 on the laptop (RTX 3060): both lines detect the
-scene cuts; the moving-average cross detects 9/9 cuts with zero false
-positives. See the notebook for the numbers and diagrams.
+Executed green 2026-09-09 on the laptop (RTX 3060):
+
+| analysis layer | scene cuts detected |
+|---|---|
+| vLLM line (centered cosine) | 6/9 (strongest cuts) |
+| HLLSet lattice line (BSSτ) | 9/9 |
+| Moving-average cross (1-gram vs 5-gram) | 9/9, zero false positives |
+| Noether D/R/N experts (weighted decision) | 9/9 |
+
+See the notebook for the full numbers and diagrams.
+
+## Next directions
+
+HLLSet is a set by behaviour, so this project can grow into the full
+statistical toolbox without leaving the lattice:
+
+- **Bayesian analysis** — BSSτ is already a conditional measure
+  (`|A∩B|/|B|`); `inscribe` = likelihood, `materialize` = posterior,
+  union/intersection = evidence combination.
+- **Markov chains** — content-addressed keys are the states; the Noether
+  D/R/N counts are the empirical transition matrices.
+- **Metrics and graphs** — Jaccard/BSS metric spaces (clustering, kernels),
+  entropy over popcounts, bitwise OR/AND as the Boolean-lattice basis.
