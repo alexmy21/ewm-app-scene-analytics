@@ -48,8 +48,15 @@ runs five layers over a 10-scene, 100-frame clip:
    algebra). Three experts — `|D|/|R∪N|`, `1 − BSS(R_t,R_{t-1})`,
    `|N|/|R∪D|` — are ranked by separation accuracy and weighted into one
    decision line (z-scores). Detects **9/9** cuts.
-5. **Real-footage run** — the same pipeline on a continuous-motion cat clip,
+5. **Thumbnail sheets** — 10×10 contact sheets for the test clip and the cat
+   clip, plus D/R/N patch-level presentations for the nine scene cuts.
+6. **Real-footage run** — the same pipeline on a continuous-motion cat clip,
    as a sanity check outside the synthetic ground truth.
+7. **Restore-from-HLLSet experiment** — one cat frame is ingested into an
+   HLLSet and restored: membership recovery has recall 100% but precision
+   ~45% (the sketch is a lossy summary), and pixel restoration shows that
+   positions are not in the HLLSet — a position-constrained patch collage is
+   recognizable, a global one is texture without structure.
 
 ## Layout
 
