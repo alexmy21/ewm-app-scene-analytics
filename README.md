@@ -91,7 +91,7 @@ modifies them.
 Executed green 2026-09-09 on the laptop (RTX 3060):
 
 | analysis layer | scene cuts detected |
-|---|---|
+| --- | --- |
 | vLLM line (centered cosine) | 6/9 (strongest cuts) |
 | HLLSet lattice line (BSSτ) | 9/9 |
 | Moving-average cross (1-gram vs 5-gram) | 9/9, zero false positives |
