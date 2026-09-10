@@ -57,6 +57,12 @@ runs five layers over a 10-scene, 100-frame clip:
    ~45% (the sketch is a lossy summary), and pixel restoration shows that
    positions are not in the HLLSet — a position-constrained patch collage is
    recognizable, a global one is texture without structure.
+8. **De Bruijn n-gram restoration** — padded 2/3/4-grams of the patch snake
+   path are ingested as separate HLLSets with 12-bit signatures, and the
+   order is reassembled by walking the De Bruijn graph (joint 2+3+4-gram
+   constraints). Restored order: **100% positional accuracy** with no
+   position oracle — the n-gram context is exactly what the unigram-only
+   sketch was missing.
 
 ## Layout
 
